@@ -9,11 +9,19 @@ var exit = null
 var astar = null
 var astar_points_cache = null
 
+var battle = null
+
 const ACCELERATION = 12
 const MAX_SPEED = 50
 const FRICTION = 12
 
 var velocity = Vector2.ZERO
+
+enum STATE{
+	roaming,
+	battle
+}
+var cur_state = STATE.roaming
 
 func update_astar(astar_update):
 	astar = astar_update["astar"]
@@ -28,6 +36,16 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	exit = exit_ref
 
 func roaminghandler(delta):
+	match cur_state:
+		STATE.roaming:
+			handle_move(delta)
+		STATE.battle:
+			if battle == null:
+				cur_state = STATE.roaming
+			else:
+				pass
+
+func handle_move(delta):
 	var input_vector = Vector2.ZERO
 	
 	input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
@@ -41,3 +59,7 @@ func roaminghandler(delta):
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 	
 	move_and_slide(velocity / delta)
+
+
+func change_color(color: Color):
+	$Sprite.set_modulate(color)

@@ -22,7 +22,8 @@ var sight_points = []
 
 enum STATE{
 	following,
-	idle
+	idle,
+	battle
 }
 var cur_state = STATE.idle
 
@@ -141,3 +142,6 @@ func world_to_map(pos: Vector2):
 	var vcoords = tilemap.world_to_map(pos)
 	var coords = [int(round(vcoords.x)), int(round(vcoords.y))]
 	return coords
+
+func change_color(color: Color):
+	$Sprite.set_modulate(color)

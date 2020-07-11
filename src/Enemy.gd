@@ -7,16 +7,30 @@ const FRICTION = 10
 
 var velocity = Vector2.ZERO
 
+var scene_root = null
 var tilemap = null
+var party = null
+var enemies = null
+var chests = null
+var exit = null
 var astar = null
 var astar_points_cache = null
 var sight_points = []
 
 enum STATE{
 	alert,
-	idle
+	idle,
+	battle
 }
 var cur_state = STATE.idle
+
+func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
+	scene_root = scn_root
+	tilemap = tilemap_ref
+	party = party_ref
+	enemies = enemies_ref
+	chests = chests_ref
+	exit = exit_ref
 
 func update_astar(astar_update):
 	astar = astar_update["astar"]
@@ -88,8 +102,13 @@ func get_grid_path(start_coord, end_coord):
 	var path = astar.get_point_path(astar_points_cache[str(start_coord)], astar_points_cache[str(end_coord)])
 	return path
 
-func roaminghandler(delta, player_loc, tilemap_ref):
-	tilemap = tilemap_ref
+func spot_player():
+	for child in party.get_children():
+		if child.get_name() == "Player":
+			return child
+
+func roaminghandler(delta):
+	var player_loc = world_to_map(spot_player().global_position)
 	match cur_state:
 		STATE.idle:
 			if has_line_of_sight(world_to_map(self.global_position), player_loc):
@@ -98,6 +117,9 @@ func roaminghandler(delta, player_loc, tilemap_ref):
 			var path = get_grid_path(world_to_map(self.global_position), player_loc)
 			if path.size() > 1:
 				move_along_path(path[1])
+				var player = hit_player()
+				if player != null:
+					print("wahoo")
 
 func move_along_path(target):
 	var coords_unformatted = world_to_map(self.global_position)
@@ -114,7 +136,17 @@ func move_along_path(target):
 	
 	move_and_slide(velocity)
 
+func hit_player():
+	for i in range(get_slide_count()):
+		var hit = get_slide_collision(i).get_collider().get_name()
+		if hit in ["Player", "Bow", "Duals", "Sticks"]:
+			return hit
+	return null
+
 func world_to_map(pos: Vector2):
 	var vcoords = tilemap.world_to_map(pos)
 	var coords = [int(round(vcoords.x)), int(round(vcoords.y))]
 	return coords
+
+func change_color(color: Color):
+	$Sprite.set_modulate(color)
