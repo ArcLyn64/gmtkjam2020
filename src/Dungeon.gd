@@ -6,6 +6,7 @@ onready var tilemap = $TileMap
 onready var enemies = $Enemies
 onready var chests = $Chests
 onready var exit : Area2D = $Exit
+onready var dialogue = $UI/Dialogue
 
 # party things
 onready var party = $Party
@@ -66,4 +67,5 @@ func go_to_next_level():
 	for child in enemies.get_children() + party.get_children():
 		child.update_astar(astar_data)
 	cur_level += 1
+	dialogue.start("res://dialogue/quips/test.json")
 	cur_state = STATE.roaming
