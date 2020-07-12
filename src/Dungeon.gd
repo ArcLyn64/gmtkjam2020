@@ -30,6 +30,7 @@ enum STATE{
 var cur_state = STATE.loading
 var foreground_color : Color = Color.blue
 var background_color : Color = Color.coral
+var background_music : AudioStreamPlayer = null
 
 var astar_data = null
 
@@ -42,8 +43,8 @@ const dark_colors = [
 	Color("#93a1a1"),
 	Color("#eee8d5"),
 	Color("#fdf6e3")
-
 ]
+
 const light_colors = [
 	Color("#b58900"),
 	Color("#cb4b16"),
@@ -68,6 +69,11 @@ func roll_colors():
 		foreground_color = dark_color
 		background_color = light_color
 
+func roll_music():
+	if(background_music != null):
+		background_music.playing = false
+	background_music = $Music.get_child(randi() % $Music.get_child_count())
+
 func _ready():
 	randomize()
 	mapgen.init(self, tilemap, party, enemies, chests, exit)
@@ -75,6 +81,7 @@ func _ready():
 		child.init(self, tilemap, party, enemies, chests, exit)
 	for child in battles.get_children():
 		child.init(self, tilemap, party, enemies, chests, exit)
+	dialogue.start("res://dialogue/opening2.json")
 	go_to_next_level()
 
 func _physics_process(delta):
@@ -87,6 +94,8 @@ func _physics_process(delta):
 			open_curtain(delta)
 			for child in party.get_children() + enemies.get_children():
 				child.call("roaminghandler", delta)
+			if !background_music.playing:
+				background_music.play()
 
 func world_to_map(pos: Vector2):
 	var vcoords = tilemap.world_to_map(pos)
@@ -98,13 +107,32 @@ func _on_Exit_body_entered(body):
 		for p in party.get_children():
 			if p.get_combatant_data().in_battle == true:
 				print("a teammate remains, you cannot leave!")
+				p.announce_stuck()
 				return
 		go_to_next_level()
+
+func get_all_quips():
+	var path = "res://dialogue/quips/"
+	var files = []
+	var dir = Directory.new()
+	dir.open(path)
+	dir.list_dir_begin()
+	
+	while true:
+		var file = dir.get_next()
+		if file == "":
+			break
+		elif not file.begins_with("."):
+			files.append(path + file)
+	return files
 
 func go_to_next_level():
 	cur_state = STATE.loading
 	for child in chests.get_children() + enemies.get_children():
 		child.queue_free()
+	for child in party.get_children():
+		if child.get_combatant_data().dead():
+			child.queue_free()
 	yield(get_tree().create_timer(1.0), "timeout")
 	
 	astar_data = mapgen.generate_world(cur_level)
@@ -115,12 +143,14 @@ func go_to_next_level():
 	for child in party.get_children():
 		child.update_astar(astar_data)
 	if cur_level % FLOOR_CHANGE == 0:
+		roll_music()
 		roll_colors()
 	change_foreground_color(foreground_color)
 	change_background_color(background_color)
 
 	cur_level += 1
-	dialogue.start("res://dialogue/quips/test.json")
+	if randi() % 4 == 0:
+		dialogue.start(get_rand_from_arr(get_all_quips()))
 	cur_state = STATE.roaming
 
 func close_curtain(delta):
@@ -160,3 +190,8 @@ func return_to_menu():
 	cur_state = STATE.loading
 	yield(get_tree().create_timer(0.5), "timeout")
 	get_tree().change_scene("res://MainMenu.tscn")
+
+func game_over():
+	cur_state = STATE.loading
+	yield(get_tree().create_timer(0.5), "timeout")
+	get_tree().change_scene("res://Gameover.tscn")

@@ -32,6 +32,9 @@ func start(json_fp):
 	cur_dialogue = read_json(json_fp).values()
 	begin_playback()
 
+func _ready():
+	text_lbl.visible_characters = 0
+
 func begin_playback():
 	name_lbl.text = ""
 	text_lbl.text = ""

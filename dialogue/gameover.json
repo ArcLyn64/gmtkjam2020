@@ -1,0 +1,14 @@
+{
+	"000":{
+	"name": "",
+	"text": "Your adventure has come to an end."
+	},
+	"001":{
+	"name": "",
+	"text": "You are unable to be revived."
+	},
+	"002":{
+	"name": "",
+	"text": "Returning to Main Menu..."
+	}
+}

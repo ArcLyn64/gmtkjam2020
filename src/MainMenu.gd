@@ -14,6 +14,7 @@ onready var vlbl = $Actions/VAct/VLbl
 onready var vind = $Actions/VAct/VInd
 
 onready var dungeon = preload("res://map/Dungeon.tscn")
+onready var opening = preload("res://Opening.tscn")
 
 const VALID_COLOR = Color.black
 const INVALID_COLOR = Color.gray
@@ -62,8 +63,6 @@ func _process(delta):
 	# draw menu
 	create_menu()
 	action_handler(delta)
-	if !$Test.playing:
-		$Test.play()
 
 func action_handler(delta):
 	if Input.is_action_just_pressed("z"):
@@ -85,7 +84,7 @@ func create_menu():
 func do_action(bind):
 	match actions[bind]:
 		"Start":
-			get_tree().change_scene_to(dungeon)
+			get_tree().change_scene_to(opening)
 		"Volume +":
 			var bus = AudioServer.get_bus_index("Master")
 			var cur_volume = AudioServer.get_bus_volume_db(bus)

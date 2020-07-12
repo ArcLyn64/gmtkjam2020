@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://actors/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/MapGen.gd" type="Script" id=2]
@@ -10,6 +10,9 @@
 [ext_resource path="res://objects/Exit.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/Dialogue.tscn" type="PackedScene" id=9]
 [ext_resource path="res://ui/Battle.tscn" type="PackedScene" id=10]
+[ext_resource path="res://music/stars.wav" type="AudioStream" id=11]
+[ext_resource path="res://music/mess.wav" type="AudioStream" id=12]
+[ext_resource path="res://music/underbelly.wav" type="AudioStream" id=13]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -98,4 +101,18 @@ color = Color( 0, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Music" type="Node" parent="."]
+
+[node name="Mess" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource( 12 )
+volume_db = -10.0
+
+[node name="Stars" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource( 11 )
+volume_db = -10.0
+
+[node name="Underbelly" type="AudioStreamPlayer" parent="Music"]
+stream = ExtResource( 13 )
+volume_db = -10.0
 [connection signal="body_entered" from="Exit" to="." method="_on_Exit_body_entered"]

@@ -79,7 +79,7 @@ func roaminghandler(delta):
 					if !ally.combatant_data.dead() and ally.combatant_data.can_resurrect(self.combatant_data):
 						doomed = false
 				if doomed:
-					scene_root.return_to_menu()
+					scene_root.game_over()
 
 func position_interact(input_vector):
 	interact.set_transform(Transform2D(0, input_vector*INTERACT_DIST))

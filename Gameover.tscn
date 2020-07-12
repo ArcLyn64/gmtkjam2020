@@ -1,0 +1,83 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://fonts/OpenDyslexic-Regular.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://src/Dialogue.gd" type="Script" id=2]
+[ext_resource path="res://sounds/message.wav" type="AudioStream" id=3]
+[ext_resource path="res://src/Gameover.gd" type="Script" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 4
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 5
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+font_data = ExtResource( 1 )
+
+[node name="Node" type="Node"]
+script = ExtResource( 4 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 320.0
+margin_bottom = 180.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Dialogue" type="Panel" parent="."]
+margin_left = 110.028
+margin_top = 60.7736
+margin_right = 200.028
+margin_bottom = 100.774
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="Dialogue"]
+margin_right = 90.0
+margin_bottom = 40.0
+color = Color( 0.0862745, 0.0862745, 0.0862745, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="Label" parent="Dialogue"]
+margin_left = 0.630882
+margin_top = 0.114197
+margin_right = 42.6309
+margin_bottom = 10.1142
+custom_fonts/font = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" type="RichTextLabel" parent="Dialogue"]
+margin_left = 0.73777
+margin_top = 9.72798
+margin_right = 88.7378
+margin_bottom = 37.728
+custom_fonts/normal_font = SubResource( 2 )
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MessageNoise" type="AudioStreamPlayer2D" parent="Dialogue"]
+stream = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="."]
+modulate = Color( 0.14902, 0.145098, 0.145098, 1 )
+margin_left = 2.38327
+margin_top = 153.721
+margin_right = 78.3833
+margin_bottom = 181.721
+custom_fonts/font = SubResource( 3 )
+text = "Z to skip"
+__meta__ = {
+"_edit_use_anchors_": false
+}

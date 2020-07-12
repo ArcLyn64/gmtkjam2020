@@ -2,7 +2,7 @@
 
 [ext_resource path="res://src/MainMenu.gd" type="Script" id=1]
 [ext_resource path="res://fonts/OpenDyslexic-Regular.otf" type="DynamicFontData" id=2]
-[ext_resource path="res://sounds/monster_sounds/monster2.wav" type="AudioStream" id=3]
+[ext_resource path="res://music/ominous.wav" type="AudioStream" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -152,15 +152,11 @@ margin_bottom = 39.0
 text = "Zaction
 fkadjfljakd"
 
-[node name="Test" type="AudioStreamPlayer2D" parent="MainMenu"]
-position = Vector2( -10, -100 )
-stream = ExtResource( 3 )
-
 [node name="Title" type="Label" parent="."]
 margin_right = 320.0
 margin_bottom = 70.0
 custom_fonts/font = SubResource( 5 )
-text = "Working Title"
+text = "Ever Forth"
 align = 1
 valign = 2
 __meta__ = {
@@ -218,3 +214,7 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Theme" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+autoplay = true

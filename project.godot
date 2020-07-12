@@ -32,9 +32,10 @@ _global_script_class_icons={
 
 [application]
 
-config/name="gmtkjam2020"
+config/name="Ever Forth"
 run/main_scene="res://MainMenu.tscn"
-config/icon="res://icon.png"
+run/disable_stdout=true
+run/disable_stderr=true
 
 [display]
 

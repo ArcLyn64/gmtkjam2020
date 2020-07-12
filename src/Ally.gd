@@ -21,6 +21,8 @@ var astar_points_cache = null
 var leader = null
 var sight_points = []
 
+var json_dir = "res://dialogue/"
+
 var scene_color = Color.white
 
 enum STATE{
@@ -52,9 +54,17 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	chests = chests_ref
 	exit = exit_ref
 	leader = spot_player()
+	json_dir += get_name() + "/"
 	combatant_data.init(get_name())
 	combatant_data.set_ai("ally")
 
+func announce_level():
+	var fp = json_dir + "level.json"
+	scene_root.dialogue.start(fp)
+
+func announce_stuck():
+	var fp = json_dir + "abandon.json"
+	scene_root.dialogue.start(fp)
 
 func update_astar(astar_update):
 	astar = astar_update["astar"]
@@ -172,6 +182,7 @@ func roaminghandler(delta):
 		var bind = ["z", "x", "c", "v"][randi() % 4]
 		var trade = ["z", "x", "c"][randi() % 3]
 		combatant_data.level_up(bind, trade)
+		announce_level()
 
 func move_along_path(target):
 	var coords_unformatted = world_to_map(self.global_position)

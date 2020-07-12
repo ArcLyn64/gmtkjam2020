@@ -1,0 +1,63 @@
+{
+	"000":{
+	"name": "Bow",
+	"text":	"This is the place?"
+	},
+	"001":{
+	"name": "Sticks",
+	"text":	"That's what I heard"
+	},
+	"002":{
+	"name": "Duals",
+	"text":	"So it just keeps going?"
+	},
+	"003":{
+	"name": "Sticks",
+	"text":	"Yeah."
+	},
+	"004":{
+	"name": "Bow",
+	"text":	"I don't know about this N-"
+	},
+	"005":{
+	"name": "Duals",
+	"text":	"DUALS. Codenames, remember?"
+	},
+	"006":{
+	"name": "Bow",
+	"text":	"Why are we using codenames again?"
+	},
+	"007":{
+	"name": "Scythes",
+	"text":	"It's fun."
+	},
+	"008":{
+	"name": "Bow",
+	"text":	"Is fun really the most important thing right now?"
+	},
+	"009":{
+	"name": "Duals",
+	"text":	"I mean, we're about to jump into a monster-infested dungeon for fun."
+	},
+	"010":{
+	"name": "Bow",
+	"text":	"Valid point."
+	},
+	"011":{
+	"name": "Sticks",
+	"text":	"Well, down we go. Hup!"
+	},
+	"012":{
+	"name": "Bow",
+	"text":	"Ow!"
+	},
+	"013":{
+	"name": "Duals",
+	"text":	"It is DARK down here."
+	},
+	"014":{
+	"name": "Bow",
+	"text":	"Fearless leader, the radar!"
+	},
+
+}
