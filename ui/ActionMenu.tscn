@@ -1,0 +1,138 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://src/ActionMenu.gd" type="Script" id=1]
+[ext_resource path="res://fonts/OpenDyslexic-Regular.otf" type="DynamicFontData" id=2]
+
+[sub_resource type="DynamicFont" id=2]
+size = 4
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.0745098, 0.0745098, 0.0745098, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.0745098, 0.0745098, 0.0745098, 1 )
+
+[node name="ActionMenu" type="PanelContainer"]
+margin_left = 68.0
+margin_top = 95.0
+margin_right = 193.0
+margin_bottom = 120.0
+theme = SubResource( 3 )
+custom_styles/panel = SubResource( 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Actions" type="HBoxContainer" parent="."]
+margin_left = 9.0
+margin_top = 4.0
+margin_right = 116.0
+margin_bottom = 21.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_constants/separation = 5
+alignment = 1
+
+[node name="ZAct" type="PanelContainer" parent="Actions"]
+margin_right = 23.0
+margin_bottom = 17.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="ZInd" type="ColorRect" parent="Actions/ZAct"]
+margin_right = 23.0
+margin_bottom = 17.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="ZLbl" type="Label" parent="Actions/ZAct"]
+margin_top = 5.0
+margin_right = 23.0
+margin_bottom = 12.0
+text = "Zaction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="Actions/ZAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 23.0
+margin_bottom = 17.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="XAct" type="PanelContainer" parent="Actions"]
+margin_left = 28.0
+margin_right = 51.0
+margin_bottom = 17.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="XInd" type="ColorRect" parent="Actions/XAct"]
+margin_right = 23.0
+margin_bottom = 17.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="XLbl" type="Label" parent="Actions/XAct"]
+margin_top = 5.0
+margin_right = 23.0
+margin_bottom = 12.0
+text = "Xaction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="Actions/XAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 23.0
+margin_bottom = 17.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="CAct" type="PanelContainer" parent="Actions"]
+margin_left = 56.0
+margin_right = 79.0
+margin_bottom = 17.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="CInd" type="ColorRect" parent="Actions/CAct"]
+margin_right = 23.0
+margin_bottom = 17.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="CLbl" type="Label" parent="Actions/CAct"]
+margin_top = 5.0
+margin_right = 23.0
+margin_bottom = 12.0
+text = "Caction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="Actions/CAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 23.0
+margin_bottom = 17.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="VAct" type="PanelContainer" parent="Actions"]
+margin_left = 84.0
+margin_right = 107.0
+margin_bottom = 17.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="VInd" type="ColorRect" parent="Actions/VAct"]
+margin_right = 23.0
+margin_bottom = 17.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="VLbl" type="Label" parent="Actions/VAct"]
+margin_top = 5.0
+margin_right = 23.0
+margin_bottom = 12.0
+text = "Vaction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="Actions/VAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 23.0
+margin_bottom = 17.0
+text = "Zaction
+fkadjfljakd"

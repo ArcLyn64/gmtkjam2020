@@ -27,6 +27,19 @@ enum STATE{
 }
 var cur_state = STATE.idle
 
+var combatant_data = Combatant.new()
+
+func enter_battle():
+	if combatant_data.in_battle:
+		return false
+	cur_state = STATE.battle
+	combatant_data.enter_battle()
+	print(get_name() + " is raring to go!")
+	return true
+
+func get_combatant_data() -> Combatant:
+	return combatant_data
+
 func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	scene_root = scn_root
 	tilemap = tilemap_ref
@@ -35,6 +48,7 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	chests = chests_ref
 	exit = exit_ref
 	leader = spot_player()
+	combatant_data.init(get_name())
 
 
 func update_astar(astar_update):
@@ -122,6 +136,9 @@ func roaminghandler(delta):
 				move_along_path(path[1])
 			if distance_to(leader) < IDLE_DISTANCE:
 				cur_state = STATE.idle
+		STATE.battle:
+			if !combatant_data.in_battle:
+				cur_state = STATE.following
 
 func move_along_path(target):
 	var coords_unformatted = world_to_map(self.global_position)

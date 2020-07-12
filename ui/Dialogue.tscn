@@ -12,10 +12,8 @@ size = 5
 font_data = ExtResource( 1 )
 
 [node name="Dialogue" type="Panel"]
-margin_left = 0.49041
-margin_top = 0.945385
-margin_right = 90.4904
-margin_bottom = 40.9454
+margin_right = 90.0
+margin_bottom = 40.0
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false

@@ -9,8 +9,6 @@ var exit = null
 var astar = null
 var astar_points_cache = null
 
-var battle = null
-
 const ACCELERATION = 12
 const MAX_SPEED = 50
 const FRICTION = 12
@@ -22,6 +20,22 @@ enum STATE{
 	battle
 }
 var cur_state = STATE.roaming
+
+var combatant_data = Combatant.new()
+
+func _ready():
+	combatant_data.init(get_name())
+
+func enter_battle():
+	if combatant_data.in_battle:
+		return false
+	cur_state = STATE.battle
+	combatant_data.enter_battle()
+	print(get_name() + " is raring to go!")
+	return true
+
+func get_combatant_data() -> Combatant:
+	return combatant_data
 
 func update_astar(astar_update):
 	astar = astar_update["astar"]
@@ -36,14 +50,14 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	exit = exit_ref
 
 func roaminghandler(delta):
+	if combatant_data.dead():
+		return
 	match cur_state:
 		STATE.roaming:
 			handle_move(delta)
 		STATE.battle:
-			if battle == null:
+			if !combatant_data.in_battle:
 				cur_state = STATE.roaming
-			else:
-				pass
 
 func handle_move(delta):
 	var input_vector = Vector2.ZERO

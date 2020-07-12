@@ -10,6 +10,7 @@ onready var mapgen = $MapGen
 onready var tilemap = $TileMap
 onready var enemies = $Enemies
 onready var chests = $Chests
+onready var battles = $Battles
 onready var exit : Area2D = $Exit
 onready var dialogue = $UI/Dialogue
 onready var curtain = $UI/Curtain
@@ -34,6 +35,8 @@ func _ready():
 	randomize()
 	mapgen.init(self, tilemap, party, enemies, chests, exit)
 	for child in party.get_children():
+		child.init(self, tilemap, party, enemies, chests, exit)
+	for child in battles.get_children():
 		child.init(self, tilemap, party, enemies, chests, exit)
 	go_to_next_level()
 
@@ -103,3 +106,11 @@ func change_foreground_color(color: Color):
 
 func change_background_color(color: Color):
 	VisualServer.set_default_clear_color(color)
+
+func init_battle(position):
+	for battle in battles.get_children():
+		if !battle.fighting:
+			battle.global_position = position
+			yield(get_tree().create_timer(0.5), "timeout")
+			battle.start_battle()
+			return

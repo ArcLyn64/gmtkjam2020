@@ -20,9 +20,23 @@ var sight_points = []
 enum STATE{
 	alert,
 	idle,
-	battle
+	battle,
+	await
 }
 var cur_state = STATE.idle
+
+var combatant_data = Combatant.new()
+
+func enter_battle():
+	if combatant_data.in_battle:
+		return false
+	cur_state = STATE.battle
+	combatant_data.enter_battle()
+	print(get_name() + " is raring to go!")
+	return true
+
+func get_combatant_data() -> Combatant:
+	return combatant_data
 
 func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	scene_root = scn_root
@@ -31,6 +45,7 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	enemies = enemies_ref
 	chests = chests_ref
 	exit = exit_ref
+	combatant_data.init(get_name())
 
 func update_astar(astar_update):
 	astar = astar_update["astar"]
@@ -108,6 +123,9 @@ func spot_player():
 			return child
 
 func roaminghandler(delta):
+	if combatant_data.dead():
+		queue_free()
+		return
 	var player_loc = world_to_map(spot_player().global_position)
 	match cur_state:
 		STATE.idle:
@@ -119,7 +137,13 @@ func roaminghandler(delta):
 				move_along_path(path[1])
 				var player = hit_player()
 				if player != null:
-					print("wahoo")
+					scene_root.init_battle(global_position)
+					cur_state = STATE.await
+		STATE.await:
+			pass
+		STATE.battle:
+			if !combatant_data.in_battle:
+				cur_state = STATE.alert
 
 func move_along_path(target):
 	var coords_unformatted = world_to_map(self.global_position)
