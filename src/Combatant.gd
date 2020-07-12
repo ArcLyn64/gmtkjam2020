@@ -12,7 +12,7 @@ const BASE_STAT = 1
 
 const XP_BASE = 10
 const XP_GAIN_RATE = 1.1
-const XP_REWARD_PROP = 0.5
+const XP_REWARD_PROP = 10.0
 
 const AG_CHARGE = 10
 const READY_CHARGE = 100.0
@@ -79,6 +79,15 @@ var skills = {
 	"x" : null,
 	"c" : null,
 	"v" : "back"
+}
+
+var level_skills = null
+
+const level_binds = {
+	"z": "at",
+	"x": "ma",
+	"c": "ag",
+	"v": "en"
 }
 
 var items = []
@@ -241,7 +250,10 @@ func enter_battle():
 
 func init(n: String):
 	combatant_name = n
+	randomize()
 	roll_skills()
+	roll_weaknesses()
+	roll_level_options()
 
 func pickup_item(skill_name, skill_level):
 	items.append({
@@ -251,6 +263,16 @@ func pickup_item(skill_name, skill_level):
 
 func dead() -> bool:
 	return hp <= 0
+
+func roll_weaknesses():
+	var elements = res.keys()
+	var weak = null
+	var strong = null
+	while (weak == strong):
+		weak = get_rand_from_arr(elements)
+		strong = get_rand_from_arr(elements)
+	res[weak] = WK
+	res[strong] = ST
 
 func xp_reward() -> int:
 	return int(next_xp() * XP_REWARD_PROP)
@@ -272,11 +294,46 @@ func assign_skill(bind, skill_name, skill_level):
 	}
 
 func check_level_up() -> bool:
-	if xp >= next_xp():
-		xp = xp - next_xp()
-		level += 1
-		return true
-	return false
+	return xp >= next_xp()
+
+func get_rand_from_arr(arr):
+	return arr[randi() % arr.size()]
+
+func roll_item():
+	var skill_name = get_rand_from_arr(SkillCompendium.compendium.keys())
+	var skill_level = level + (randi() % 3)
+	return {
+		"name": skill_name,
+		"level": skill_level
+	}
+
+func reward_item():
+	var item = roll_item()
+	pickup_item(item["name"], item["level"])
+
+func roll_level_options():
+	var at_skill = get_rand_from_arr(SkillCompendium.at_skills)
+	var ma_skill = get_rand_from_arr(SkillCompendium.ma_skills)
+	var ag_skill = get_rand_from_arr(SkillCompendium.ag_skills)
+	var en_skill = get_rand_from_arr(SkillCompendium.en_skills)
+	
+	level_skills = {
+		"z": at_skill,
+		"x": ma_skill,
+		"c": ag_skill,
+		"v": en_skill
+	}
+
+func level_up(bind, trade):
+	xp = xp - next_xp()
+	level += 1
+	stats[level_binds[bind]] += 1
+	if trade != "v":
+		skills[trade] = {
+			"name": level_skills[bind],
+			"level": level
+		}
+	roll_level_options()
 
 func get_stats() -> Dictionary:
 	return {
@@ -321,7 +378,7 @@ func cast_skill(bind, target: Combatant):
 	target.hp = min(target.hp + heal["heal"], target.max_hp())
 	release()
 	if heal["heal"] > 0:
-		return combatant_name + " heals " + target.combatant_name + " for " + heal["heal"] + "."
+		return combatant_name + " heals " + target.combatant_name + " for " + str(heal["heal"]) + "."
 	return combatant_name + " hits " + target.combatant_name + " with " + skill_title(bind) + " for " + str(final_damage) + "!"
 
 func can_cast(bind):
@@ -361,13 +418,16 @@ func use_item(ind, target: Combatant):
 	
 	release()
 	if heal["heal"] > 0:
-		return combatant_name + " heals " + target.combatant_name + " for " + heal["heal"] + "."
+		return combatant_name + " heals " + target.combatant_name + " for " + str(heal["heal"]) + "."
 	return combatant_name + " hits " + target.combatant_name + " with " + item_title(ind) + " for " + str(final_damage) + "!"
+
+func can_resurrect(target: Combatant):
+	var resurrect_cost = max_sp() / 2
+	return sp >= resurrect_cost and target.dead()
 
 func cast_resurrect(target: Combatant):
 	var resurrect_cost = max_sp() / 2
-	assert(sp >= resurrect_cost)
-	assert(target.hp < 1)
+	assert(can_resurrect(target))
 	sp -= resurrect_cost
 	target.hp = target.max_hp() / 2
 	release()

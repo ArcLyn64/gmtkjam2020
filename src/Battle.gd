@@ -5,6 +5,7 @@ onready var enemylist = $Menu/Enemies/VBoxContainer
 onready var area = $Area2D
 onready var menu = $Menu
 onready var actionmenu = $Menu/ActionMenu
+onready var combatlog = $Menu/Log/CombatLog
 onready var CombatantLabel = preload("res://ui/CombatantLabel.tscn")
 
 var scene_root = null
@@ -56,6 +57,8 @@ func start_battle():
 				add_combatant(enemylist, child)
 	update_based_on_player()
 	fighting = true
+	if (num_allies() > 0 and num_enemies() > 0):
+		select_up()
 
 func update_based_on_player():
 	if player_present():
@@ -89,6 +92,11 @@ func wipe_dead():
 			enemy.leave_battle()
 	for ally in allylist.get_children():
 		ally.combatant.xp += total_xp_allies / allylist.get_child_count()
+		ally.combatant.reward_item()
+	if num_enemies() > 0:
+		enemy_select = enemy_select % num_enemies()
+	if num_allies() > 0:
+		ally_select = ally_select % num_allies()
 
 func wipe_flee():
 	for ally in allylist.get_children():
@@ -97,6 +105,10 @@ func wipe_flee():
 	for enemy in enemylist.get_children():
 		if !enemy.combatant.in_battle:
 			flee(enemy.combatant)
+	if num_enemies() > 0:
+		enemy_select = enemy_select % num_enemies()
+	if num_allies() > 0:
+		ally_select = ally_select % num_allies()
 
 func flee(combatant):
 	for ally in allylist.get_children():
@@ -105,6 +117,10 @@ func flee(combatant):
 	for enemy in enemylist.get_children():
 		if enemy.combatant == combatant:
 			enemy.leave_battle()
+	if num_enemies() > 0:
+		enemy_select = enemy_select % num_enemies()
+	if num_allies() > 0:
+		ally_select = ally_select % num_allies()
 
 func get_ally(ind: int) -> CombatantLabel:
 	return allylist.get_children()[ind]
@@ -140,6 +156,7 @@ func reset():
 	for enemy in enemylist.get_children():
 		enemy.leave_battle()
 	combat_log = []
+	combatlog.text = ""
 	hide()
 
 func _process(delta):
@@ -150,8 +167,9 @@ func _process(delta):
 			select_down()
 	else:
 		actionmenu.disable()
-	wipe_dead()
-	wipe_flee()
+	if fighting:
+		wipe_dead()
+		wipe_flee()
 	if (num_allies() == 0 or num_enemies() == 0) and fighting:
 #		print("battle over!")
 		reset()
@@ -172,10 +190,17 @@ func _process(delta):
 		if unit.combatant.charged():
 			var log_str = unit.combatant.act(allyarr, enemyarr)
 			if log_str != null:
+				$HitSound.set_pitch_scale((105.0 - (randi() % 20)) / 100.0)
+				$HitSound.play()
 				combat_log.append(log_str)
+				add_to_log(log_str)
 				print(log_str)
 		else:
 			unit.combatant.charge_up(delta)
+
+func add_to_log(string):
+	if string != null:
+		combatlog.text += string + "\n"
 
 func player_present():
 	for ind in range(num_allies()):

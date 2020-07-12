@@ -5,6 +5,8 @@ const CURTAIN_LEFT_BOUND = -217
 const CURTAIN_CLOSED_BOUND = 250
 const CURTAIN_SPEED = 50
 
+const FLOOR_CHANGE = 10
+
 # world things
 onready var mapgen = $MapGen
 onready var tilemap = $TileMap
@@ -31,6 +33,41 @@ var background_color : Color = Color.coral
 
 var astar_data = null
 
+const dark_colors = [
+	Color("#002b36"),
+	Color("#073642"),
+	Color("#586e75"),
+	Color("#657b83"),
+	Color("#839496"),
+	Color("#93a1a1"),
+	Color("#eee8d5"),
+	Color("#fdf6e3")
+
+]
+const light_colors = [
+	Color("#b58900"),
+	Color("#cb4b16"),
+	Color("#dc322f"),
+	Color("#d33682"),
+	Color("#6c71c4"),
+	Color("#268bd2"),
+	Color("#2aa198"),
+	Color("#859900")
+]
+
+func get_rand_from_arr(arr):
+	return arr[randi() % arr.size()]
+
+func roll_colors():
+	var light_color = get_rand_from_arr(light_colors)
+	var dark_color = get_rand_from_arr(dark_colors)
+	if randi() % 2 == 0:
+		foreground_color = light_color
+		background_color = dark_color
+	else:
+		foreground_color = dark_color
+		background_color = light_color
+
 func _ready():
 	randomize()
 	mapgen.init(self, tilemap, party, enemies, chests, exit)
@@ -50,8 +87,6 @@ func _physics_process(delta):
 			open_curtain(delta)
 			for child in party.get_children() + enemies.get_children():
 				child.call("roaminghandler", delta)
-#			for child in party.get_children() + enemies.get_children():
-#				child.call("roaminghandler", delta)
 
 func world_to_map(pos: Vector2):
 	var vcoords = tilemap.world_to_map(pos)
@@ -76,8 +111,11 @@ func go_to_next_level():
 	for child in enemies.get_children():
 		child.init(self, tilemap, party, enemies, chests, exit)
 		child.update_astar(astar_data)
+		child.level_enemy(cur_level)
 	for child in party.get_children():
 		child.update_astar(astar_data)
+	if cur_level % FLOOR_CHANGE == 0:
+		roll_colors()
 	change_foreground_color(foreground_color)
 	change_background_color(background_color)
 
@@ -114,6 +152,11 @@ func init_battle(position):
 	for battle in battles.get_children():
 		if !battle.fighting:
 			battle.global_position = position
-			yield(get_tree().create_timer(0.5), "timeout")
+			yield(get_tree().create_timer(0.2), "timeout")
 			battle.start_battle()
 			return
+
+func return_to_menu():
+	cur_state = STATE.loading
+	yield(get_tree().create_timer(0.5), "timeout")
+	get_tree().change_scene("res://MainMenu.tscn")

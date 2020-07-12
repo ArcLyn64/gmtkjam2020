@@ -1,0 +1,220 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://src/MainMenu.gd" type="Script" id=1]
+[ext_resource path="res://fonts/OpenDyslexic-Regular.otf" type="DynamicFontData" id=2]
+[ext_resource path="res://sounds/monster_sounds/monster2.wav" type="AudioStream" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 10
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=2]
+default_font = SubResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0745098, 0.0745098, 0.0745098, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.0745098, 0.0745098, 0.0745098, 1 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 30
+font_data = ExtResource( 2 )
+
+[node name="Node" type="Node"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 320.0
+margin_bottom = 180.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainMenu" type="PanelContainer" parent="."]
+margin_left = 10.0
+margin_top = 100.0
+margin_right = 310.0
+margin_bottom = 160.0
+theme = SubResource( 2 )
+custom_styles/panel = SubResource( 3 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Actions" type="HBoxContainer" parent="MainMenu"]
+margin_left = 28.0
+margin_top = 10.0
+margin_right = 271.0
+margin_bottom = 49.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_constants/separation = 5
+alignment = 1
+
+[node name="ZAct" type="PanelContainer" parent="MainMenu/Actions"]
+margin_right = 57.0
+margin_bottom = 39.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="ZInd" type="ColorRect" parent="MainMenu/Actions/ZAct"]
+margin_right = 57.0
+margin_bottom = 39.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="ZLbl" type="Label" parent="MainMenu/Actions/ZAct"]
+margin_top = 10.0
+margin_right = 57.0
+margin_bottom = 28.0
+text = "Zaction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="MainMenu/Actions/ZAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 57.0
+margin_bottom = 39.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="XAct" type="PanelContainer" parent="MainMenu/Actions"]
+margin_left = 62.0
+margin_right = 119.0
+margin_bottom = 39.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="XInd" type="ColorRect" parent="MainMenu/Actions/XAct"]
+margin_right = 57.0
+margin_bottom = 39.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="XLbl" type="Label" parent="MainMenu/Actions/XAct"]
+margin_top = 10.0
+margin_right = 57.0
+margin_bottom = 28.0
+text = "Xaction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="MainMenu/Actions/XAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 57.0
+margin_bottom = 39.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="CAct" type="PanelContainer" parent="MainMenu/Actions"]
+margin_left = 124.0
+margin_right = 181.0
+margin_bottom = 39.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="CInd" type="ColorRect" parent="MainMenu/Actions/CAct"]
+margin_right = 57.0
+margin_bottom = 39.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="CLbl" type="Label" parent="MainMenu/Actions/CAct"]
+margin_top = 10.0
+margin_right = 57.0
+margin_bottom = 28.0
+text = "Caction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="MainMenu/Actions/CAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 57.0
+margin_bottom = 39.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="VAct" type="PanelContainer" parent="MainMenu/Actions"]
+margin_left = 186.0
+margin_right = 243.0
+margin_bottom = 39.0
+custom_styles/panel = SubResource( 4 )
+
+[node name="VInd" type="ColorRect" parent="MainMenu/Actions/VAct"]
+margin_right = 57.0
+margin_bottom = 39.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="VLbl" type="Label" parent="MainMenu/Actions/VAct"]
+margin_top = 10.0
+margin_right = 57.0
+margin_bottom = 28.0
+text = "Vaction"
+align = 1
+
+[node name="widthcontrol" type="Label" parent="MainMenu/Actions/VAct"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 57.0
+margin_bottom = 39.0
+text = "Zaction
+fkadjfljakd"
+
+[node name="Test" type="AudioStreamPlayer2D" parent="MainMenu"]
+position = Vector2( -10, -100 )
+stream = ExtResource( 3 )
+
+[node name="Title" type="Label" parent="."]
+margin_right = 320.0
+margin_bottom = 70.0
+custom_fonts/font = SubResource( 5 )
+text = "Working Title"
+align = 1
+valign = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Z" type="Label" parent="."]
+margin_left = 25.6601
+margin_top = 124.904
+margin_right = 105.66
+margin_bottom = 204.904
+custom_fonts/font = SubResource( 5 )
+text = "Z"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="X" type="Label" parent="."]
+margin_left = 85.6593
+margin_top = 124.527
+margin_right = 165.659
+margin_bottom = 204.527
+custom_fonts/font = SubResource( 5 )
+text = "X"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="C" type="Label" parent="."]
+margin_left = 149.809
+margin_top = 124.904
+margin_right = 229.809
+margin_bottom = 204.904
+custom_fonts/font = SubResource( 5 )
+text = "C"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="V" type="Label" parent="."]
+margin_left = 212.827
+margin_top = 125.659
+margin_right = 292.828
+margin_bottom = 205.659
+custom_fonts/font = SubResource( 5 )
+text = "V"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

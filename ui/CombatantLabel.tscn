@@ -80,8 +80,8 @@ margin_right = 60.0
 margin_bottom = 38.0
 
 [node name="Indicator" type="ColorRect" parent="IndicatorControl"]
-margin_left = 60.0
-margin_right = 65.0
+margin_left = 58.0
+margin_right = 63.0
 margin_bottom = 38.0
 color = Color( 1, 0, 1, 1 )
 __meta__ = {

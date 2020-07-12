@@ -99,18 +99,18 @@ func _process(delta):
 			indicator.color = INVALID_COLOR
 	# take input
 	if menustate != MENUSTATE.inactive:
-		action_handler(delta)
+		battle.add_to_log(action_handler(delta))
 	
 
 func action_handler(delta):
 	if Input.is_action_just_pressed("z"):
-		do_action("z")
+		return do_action("z")
 	elif Input.is_action_just_pressed("x"):
-		do_action("x")
+		return do_action("x")
 	elif Input.is_action_just_pressed("c"):
-		do_action("c")
+		return do_action("c")
 	elif Input.is_action_just_pressed("v"):
-		do_action("v")
+		return do_action("v")
 
 func create_menu(binds: Dictionary):
 	# assign text
@@ -165,7 +165,7 @@ func check_skill_valid(bind):
 func do_action(bind):
 	if(!valid[bind]):
 		return null
-	
+	$SelectSound.play()
 	if typeof(actions[bind]) == TYPE_DICTIONARY:
 		var skill_name = actions[bind]["name"]
 		var skillinfo = SkillCompendium.compendium[skill_name]

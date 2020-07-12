@@ -1,5 +1,35 @@
 extends KinematicBody2D
 
+const PREFIXES = [
+	"Red",
+	"Blue",
+	"Bloody",
+	"Quirky",
+	"Tired",
+	"Spastic",
+	"Braindead",
+	"Vicious",
+	"Deadly",
+	"Jovial",
+	"Shadow",
+	"Dark",
+	"Dangerous"
+]
+const TYPES = [
+	"Slime",
+	"Drake",
+	"Salamander",
+	"Machine",
+	"Sentry",
+	"Knight",
+	"Ghost",
+	"Wight",
+	"Spider",
+	"Fly",
+	"Baal",
+	"Spirit",
+	"Curse"
+]
 
 const ACCELERATION = 10
 const MAX_SPEED = 40
@@ -34,6 +64,12 @@ func enter_battle():
 	combatant_data.enter_battle()
 	return true
 
+func level_enemy(levels):
+	for _i in range(levels):
+		var bind = ["z", "x", "c", "v"][randi() % 4]
+		var trade = ["z", "x", "c"][randi() % 3]
+		combatant_data.level_up(bind, trade)
+
 func get_combatant_data() -> Combatant:
 	return combatant_data
 
@@ -44,8 +80,17 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	enemies = enemies_ref
 	chests = chests_ref
 	exit = exit_ref
+	roll_name()
 	combatant_data.init(get_name())
 	combatant_data.set_ai("enemy")
+
+func get_rand_from_arr(arr):
+	return arr[randi() % arr.size()]
+
+func roll_name():
+	var prefix = get_rand_from_arr(PREFIXES)
+	var type = get_rand_from_arr(TYPES)
+	set_name(prefix + " " + type)
 
 func update_astar(astar_update):
 	astar = astar_update["astar"]
@@ -109,10 +154,6 @@ func has_line_of_sight(start_coord, end_coord):
 			return false
 	return true
 
-#func _draw():
-#	for sp in sight_points:
-#		draw_circle(sp, 4, Color.red)
-
 func get_grid_path(start_coord, end_coord):
 	var path = astar.get_point_path(astar_points_cache[str(start_coord)], astar_points_cache[str(end_coord)])
 	return path
@@ -130,6 +171,9 @@ func roaminghandler(delta):
 	match cur_state:
 		STATE.idle:
 			if has_line_of_sight(world_to_map(self.global_position), player_loc):
+				var sound = $Sounds.get_child(randi() % $Sounds.get_child_count())
+				sound.set_pitch_scale((105.0 - (randi() % 10)) / 100.0)
+				sound.play()
 				cur_state = STATE.alert
 		STATE.alert:
 			var path = get_grid_path(world_to_map(self.global_position), player_loc)

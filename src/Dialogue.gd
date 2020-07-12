@@ -46,6 +46,7 @@ func _process(delta):
 			self.show()
 			if timer > start_time:
 				timer = 0
+				$MessageNoise.play()
 				cur_state = STATE.writing
 			else:
 				timer += delta
@@ -55,6 +56,7 @@ func _process(delta):
 				text_lbl.visible_characters = 0
 				cur_dialogue.remove(0)
 				if cur_dialogue.size() > 0:
+					$MessageNoise.play()
 					cur_state = STATE.writing
 				else:
 					cur_state = STATE.hidden

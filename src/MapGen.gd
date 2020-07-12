@@ -195,8 +195,8 @@ func fill_wall(x_pos, y_pos, walkables):
 		walkables.erase(str_coords)
 
 func generate_objects(spawn_locations: Dictionary):
-	var enemy_spawnrate = 0.25
-	var chest_spawnrate = 0.25
+	var enemy_spawnrate = 0.25 * pow(1.1, scene_root.cur_level)
+	var chest_spawnrate = 0.25 * pow(1.1, scene_root.cur_level)
 	spawn_objects_at_locations(enemy, enemies, spawn_locations.enemy_spawn_locations, enemy_spawnrate)
 	spawn_objects_at_locations(chest, chests, spawn_locations.chest_spawn_locations, chest_spawnrate)
 	

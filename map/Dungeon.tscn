@@ -50,25 +50,6 @@ format = 1
 [node name="MapGen" type="Node2D" parent="."]
 script = ExtResource( 2 )
 
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="Dialogue" parent="UI" instance=ExtResource( 9 )]
-margin_left = 226.549
-margin_top = 136.207
-margin_right = 226.549
-margin_bottom = 136.207
-
-[node name="Curtain" type="ColorRect" parent="UI"]
-margin_left = 224.892
-margin_top = -218.548
-margin_right = 696.892
-margin_bottom = 191.452
-rect_rotation = 60.6
-color = Color( 0, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Exit" parent="." instance=ExtResource( 8 )]
 position = Vector2( 0, 20 )
 
@@ -98,4 +79,23 @@ position = Vector2( 64.5624, -7.62939e-06 )
 [node name="Battle3" parent="Battles" instance=ExtResource( 10 )]
 
 [node name="Battle4" parent="Battles" instance=ExtResource( 10 )]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Dialogue" parent="UI" instance=ExtResource( 9 )]
+margin_left = 226.549
+margin_top = 136.207
+margin_right = 226.549
+margin_bottom = 136.207
+
+[node name="Curtain" type="ColorRect" parent="UI"]
+margin_left = 224.892
+margin_top = -218.548
+margin_right = 696.892
+margin_bottom = 191.452
+rect_rotation = 60.6
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="body_entered" from="Exit" to="." method="_on_Exit_body_entered"]

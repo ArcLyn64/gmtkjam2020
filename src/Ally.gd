@@ -5,6 +5,7 @@ const MAX_SPEED = 50
 const FRICTION = 12
 
 const IDLE_DISTANCE = 30
+const INTERACT_DISTANCE = 30
 
 var velocity = Vector2.ZERO
 
@@ -20,10 +21,14 @@ var astar_points_cache = null
 var leader = null
 var sight_points = []
 
+var scene_color = Color.white
+
 enum STATE{
 	following,
 	idle,
-	battle
+	battle,
+	rez,
+	dead
 }
 var cur_state = STATE.idle
 
@@ -34,7 +39,6 @@ func enter_battle():
 		return false
 	cur_state = STATE.battle
 	combatant_data.enter_battle()
-
 	return true
 
 func get_combatant_data() -> Combatant:
@@ -123,23 +127,51 @@ func spot_player():
 		if child.get_name() == "Player":
 			return child
 
+func check_player_dead():
+	return spot_player().get_combatant_data().dead()
+
 func distance_to(target):
 	return self.global_position.distance_to(target.global_position)
 
 func roaminghandler(delta):
+	if Input.is_key_pressed(KEY_P):
+		combatant_data.hp = 0
+	if combatant_data.dead():
+		cur_state = STATE.dead
 	match cur_state:
+		STATE.dead:
+			$Sprite.set_modulate(Color.black)
+			if !combatant_data.dead():
+				change_color(scene_color)
+				cur_state = STATE.idle
 		STATE.idle:
 			if distance_to(leader) > IDLE_DISTANCE:
 				cur_state = STATE.following
+			if check_player_dead():
+				cur_state = STATE.rez
 		STATE.following:
 			var path = get_grid_path(world_to_map(self.global_position), world_to_map(leader.global_position))
 			if path.size() > 1:
 				move_along_path(path[1])
 			if distance_to(leader) < IDLE_DISTANCE:
 				cur_state = STATE.idle
+			if check_player_dead():
+				cur_state = STATE.rez
+		STATE.rez:
+			if distance_to(leader) > INTERACT_DISTANCE:
+				var path = get_grid_path(world_to_map(self.global_position), world_to_map(leader.global_position))
+				if path.size() > 1:
+					move_along_path(path[1])
+			else:
+				if combatant_data.can_resurrect(leader.get_combatant_data()):
+					combatant_data.cast_resurrect(leader.get_combatant_data())
 		STATE.battle:
 			if !combatant_data.in_battle:
 				cur_state = STATE.following
+	if combatant_data.check_level_up():
+		var bind = ["z", "x", "c", "v"][randi() % 4]
+		var trade = ["z", "x", "c"][randi() % 3]
+		combatant_data.level_up(bind, trade)
 
 func move_along_path(target):
 	var coords_unformatted = world_to_map(self.global_position)
@@ -162,4 +194,5 @@ func world_to_map(pos: Vector2):
 	return coords
 
 func change_color(color: Color):
+	scene_color = color
 	$Sprite.set_modulate(color)

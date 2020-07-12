@@ -380,6 +380,29 @@ const compendium = {
 	},
 }
 
+const at_skills = [
+	"strike"
+]
+
+const ma_skills = [
+	"fire",
+	"dark",
+	"wind"
+]
+
+const ag_skills = [
+	"focus",
+	"rush",
+	"guard",
+	"disarm",
+	"trip",
+	"break",
+]
+
+const en_skills = [
+	"heal"
+]
+
 static func get_damage(stats, target_stats, skill_name, skill_level) -> Dictionary:
 	var skillinfo = compendium[skill_name]
 	var damage = {}

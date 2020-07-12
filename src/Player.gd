@@ -1,5 +1,8 @@
 extends KinematicBody2D
 
+onready var roamingmenu = $UI/RoamingMenu
+onready var interact: Area2D = $Interact
+
 var scene_root = null
 var tilemap = null
 var party = null
@@ -13,11 +16,16 @@ const ACCELERATION = 12
 const MAX_SPEED = 50
 const FRICTION = 12
 
+const INTERACT_DIST = 10
+
 var velocity = Vector2.ZERO
+
+var scene_color = Color.white
 
 enum STATE{
 	roaming,
-	battle
+	battle,
+	dead
 }
 var cur_state = STATE.roaming
 
@@ -31,7 +39,6 @@ func enter_battle():
 		return false
 	cur_state = STATE.battle
 	combatant_data.enter_battle()
-	print(get_name() + " is raring to go!")
 	return true
 
 func get_combatant_data() -> Combatant:
@@ -48,16 +55,34 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	enemies = enemies_ref
 	chests = chests_ref
 	exit = exit_ref
+	roamingmenu.init(self)
 
 func roaminghandler(delta):
+	if Input.is_key_pressed(KEY_P):
+		combatant_data.hp = 0
 	if combatant_data.dead():
-		return
+		cur_state = STATE.dead
 	match cur_state:
 		STATE.roaming:
 			handle_move(delta)
 		STATE.battle:
 			if !combatant_data.in_battle:
 				cur_state = STATE.roaming
+		STATE.dead:
+			$Sprite.set_modulate(Color.black)
+			if !combatant_data.dead():
+				change_color(scene_color)
+				cur_state = STATE.roaming
+			else:
+				var doomed = true
+				for ally in party.get_children():
+					if !ally.combatant_data.dead() and ally.combatant_data.can_resurrect(self.combatant_data):
+						doomed = false
+				if doomed:
+					scene_root.return_to_menu()
+
+func position_interact(input_vector):
+	interact.set_transform(Transform2D(0, input_vector*INTERACT_DIST))
 
 func handle_move(delta):
 	var input_vector = Vector2.ZERO
@@ -67,6 +92,7 @@ func handle_move(delta):
 	input_vector = input_vector.normalized()
 	
 	if input_vector != Vector2.ZERO:
+		position_interact(input_vector)
 		velocity += input_vector * ACCELERATION * delta
 		velocity = velocity.clamped(MAX_SPEED * delta)
 	else:
@@ -74,6 +100,21 @@ func handle_move(delta):
 	
 	move_and_slide(velocity / delta)
 
+func get_interact_target():
+	var bodies = interact.get_overlapping_bodies()
+	for body in bodies:
+		if body != self:
+			return body
+	return null
+
+func interact():
+	var target = get_interact_target()
+	if target in chests.get_children():
+		target.crack_chest(scene_root.cur_level)
+	if target in party.get_children():
+		if combatant_data.can_resurrect(target.combatant_data):
+			combatant_data.cast_resurrect(target.combatant_data)
 
 func change_color(color: Color):
+	scene_color = color
 	$Sprite.set_modulate(color)
