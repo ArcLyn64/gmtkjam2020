@@ -25,6 +25,8 @@ var enemy_select = 0
 var ready = false
 var fighting: bool = false
 
+var combat_log = []
+
 func hide():
 	.hide()
 	for child in menu.get_children():
@@ -46,7 +48,6 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 
 func start_battle():
 	for body in area.get_overlapping_bodies():
-		print(body.get_name())
 		for child in party.get_children():
 			if body == child:
 				add_combatant(allylist, child)
@@ -79,25 +80,23 @@ func update_based_on_player():
 
 func wipe_dead():
 	var total_xp_allies = 0
-	var reselect_flag_e = false
-	var reselect_flag_a = false
 	for ally in allylist.get_children():
 		if ally.combatant.dead():
-			if ally == selected_enemy():
-				reselect_flag_a = true
 			ally.leave_battle()
 	for enemy in enemylist.get_children():
 		if enemy.combatant.dead():
 			total_xp_allies += enemy.combatant.xp_reward()
-			if enemy == selected_enemy():
-				reselect_flag_e = true
 			enemy.leave_battle()
 	for ally in allylist.get_children():
 		ally.combatant.xp += total_xp_allies / allylist.get_child_count()
-	if reselect_flag_a:
-		allylist.get_children()[0].select()
-	if reselect_flag_e:
-		enemylist.get_children()[0].select()
+
+func wipe_flee():
+	for ally in allylist.get_children():
+		if !ally.combatant.in_battle:
+			flee(ally.combatant)
+	for enemy in enemylist.get_children():
+		if !enemy.combatant.in_battle:
+			flee(enemy.combatant)
 
 func flee(combatant):
 	for ally in allylist.get_children():
@@ -127,7 +126,7 @@ func num_enemies() -> int:
 
 func add_combatant(where, body) -> bool:
 	if where.get_child_count() >= MAX_COMBATANTS || !body.enter_battle():
-		print("failed to add " + body.get_name())
+#		print("failed to add " + body.get_name())
 		return false
 	var inst = CombatantLabel.instance()
 	inst.init(body)
@@ -140,6 +139,7 @@ func reset():
 		ally.leave_battle()
 	for enemy in enemylist.get_children():
 		enemy.leave_battle()
+	combat_log = []
 	hide()
 
 func _process(delta):
@@ -151,13 +151,31 @@ func _process(delta):
 	else:
 		actionmenu.disable()
 	wipe_dead()
+	wipe_flee()
 	if (num_allies() == 0 or num_enemies() == 0) and fighting:
-		print("battle over!")
+#		print("battle over!")
 		reset()
 	if player_present():
 		show()
 	else:
 		hide()
+	
+	# run everyone's AI
+	var allyarr = []
+	for unit in allylist.get_children():
+		allyarr.append(unit.combatant)
+	var enemyarr = []
+	for unit in enemylist.get_children():
+		enemyarr.append(unit.combatant)
+	
+	for unit in allylist.get_children() + enemylist.get_children():
+		if unit.combatant.charged():
+			var log_str = unit.combatant.act(allyarr, enemyarr)
+			if log_str != null:
+				combat_log.append(log_str)
+				print(log_str)
+		else:
+			unit.combatant.charge_up(delta)
 
 func player_present():
 	for ind in range(num_allies()):

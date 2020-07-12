@@ -60,13 +60,16 @@ func world_to_map(pos: Vector2):
 
 func _on_Exit_body_entered(body):
 	if(body.get_name() == "Player"):
+		for p in party.get_children():
+			if p.get_combatant_data().in_battle == true:
+				print("a teammate remains, you cannot leave!")
+				return
 		go_to_next_level()
 
 func go_to_next_level():
 	cur_state = STATE.loading
 	for child in chests.get_children() + enemies.get_children():
 		child.queue_free()
-		
 	yield(get_tree().create_timer(1.0), "timeout")
 	
 	astar_data = mapgen.generate_world(cur_level)

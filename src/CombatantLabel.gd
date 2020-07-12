@@ -48,7 +48,7 @@ func format_display():
 	spbar.rect_size = Vector2(MAX_BAR_W * pct_sp, BAR_H)
 	hp_lbl.text = str(combatant.hp)
 	sp_lbl.text = str(combatant.sp)
-	name_lbl.text = combatant.combatant_name
+	name_lbl.text = combatant.combatant_name + " " + str(int(combatant.charge))
 
 func test_init(what: String):
 	combatant = Combatant.new()

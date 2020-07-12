@@ -2,13 +2,13 @@ extends Node2D
 class_name SkillCompendium
 
 # phys skill data
-const AT_DAM_BASE = 5
+const AT_DAM_BASE = 25
 const AT_DAM_GROWTH = 1.1
 const AT_DAM_MAX = 999
 const AT_COST_BASE = 5 # percentage of hp
 const AT_COST_GROWTH = 1.1
 # magi skill data
-const MA_DAM_BASE = 5
+const MA_DAM_BASE = 25
 const MA_DAM_GROWTH = 1.1
 const MA_DAM_MAX = 999
 const MA_COST_BASE = 3

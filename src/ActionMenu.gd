@@ -98,6 +98,11 @@ func _process(delta):
 		else:
 			indicator.color = INVALID_COLOR
 	# take input
+	if menustate != MENUSTATE.inactive:
+		action_handler(delta)
+	
+
+func action_handler(delta):
 	if Input.is_action_just_pressed("z"):
 		do_action("z")
 	elif Input.is_action_just_pressed("x"):
@@ -141,13 +146,13 @@ func check_option_valid(action):
 		"item":
 			return combatant.items.size() > 0 # cannot open without items
 		"flee":
-			return true # you can always flee
+			return combatant.charged() # you can always flee
 		"defend":
-			return battle.selected_ally().combatant != combatant # cannot ask self
+			return combatant.charged() and battle.selected_ally().combatant != combatant # cannot ask self
 		"heal":
-			return battle.selected_ally().combatant != combatant # cannot ask self
+			return combatant.charged() and battle.selected_ally().combatant != combatant # cannot ask self
 		"run":
-			return battle.selected_ally().combatant != combatant # cannot ask self
+			return combatant.charged() and battle.selected_ally().combatant != combatant # cannot ask self
 		"next":
 			return true # you can always scroll forward
 		"prev":
@@ -155,29 +160,29 @@ func check_option_valid(action):
 
 func check_skill_valid(bind):
 	var cost = combatant.skill_cost(bind)
-	return cost["hp"] < combatant.hp and cost["sp"] <= combatant.sp
+	return cost["hp"] < combatant.hp and cost["sp"] <= combatant.sp and combatant.charged()
 
 func do_action(bind):
 	if(!valid[bind]):
-		return
+		return null
 	
 	if typeof(actions[bind]) == TYPE_DICTIONARY:
 		var skill_name = actions[bind]["name"]
 		var skillinfo = SkillCompendium.compendium[skill_name]
-		if skillinfo["target"] == SkillCompendium.TARGET.ALLY:
-			combatant.cast_skill(bind, battle.selected_ally().combatant)
-		else:
-			combatant.cast_skill(bind, battle.selected_enemy().combatant)
 		menustate = MENUSTATE.main
+		if skillinfo["target"] == SkillCompendium.TARGET.ALLY:
+			return combatant.cast_skill(bind, battle.selected_ally().combatant)
+		else:
+			return combatant.cast_skill(bind, battle.selected_enemy().combatant)
 	elif actions[bind] == "use":
 		var item = combatant.items[item_index]
 		var skill_name = item["name"]
 		var skillinfo = SkillCompendium.compendium[skill_name]
-		if skillinfo["target"] == SkillCompendium.TARGET.ALLY:
-			combatant.use_item(item_index, battle.selected_ally().combatant)
-		else:
-			combatant.use_item(item_index, battle.selected_enemy().combatant)
 		menustate = MENUSTATE.main
+		if skillinfo["target"] == SkillCompendium.TARGET.ALLY:
+			return combatant.use_item(item_index, battle.selected_ally().combatant)
+		else:
+			return combatant.use_item(item_index, battle.selected_enemy().combatant)
 	else:
 		match actions[bind]:
 			"back":
@@ -189,20 +194,23 @@ func do_action(bind):
 			"item":
 				menustate = MENUSTATE.item
 			"flee":
-				battle.flee(combatant)
+				for ally in battle.allylist.get_children():
+					combatant.make_request("c", ally.combatant)
+				return combatant.leave_battle()
 			"defend":
 				menustate = MENUSTATE.main
-				pass #TODO
+				return combatant.make_request(bind, battle.selected_ally().combatant)
 			"heal":
 				menustate = MENUSTATE.main
-				pass #TODO
+				return combatant.make_request(bind, battle.selected_ally().combatant)
 			"run":
 				menustate = MENUSTATE.main
-				pass #TODO
+				return combatant.make_request(bind, battle.selected_ally().combatant)
 			"next":
 				item_index = (item_index + 1) % combatant.items.size()
 			"prev":
 				item_index = (item_index + combatant.items.size() - 1) % combatant.items.size()
+	return null # no action took place
 
 func format_skill_cost(cost) -> String:
 	var ret = ""

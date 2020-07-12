@@ -50,9 +50,8 @@ valign = 1
 [node name="HPBar" type="ColorRect" parent="VBoxContainer/HP"]
 show_behind_parent = true
 margin_left = 5.0
-margin_top = 2.5
 margin_right = 55.0
-margin_bottom = 7.5
+margin_bottom = 5.0
 color = Color( 1, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -69,9 +68,8 @@ valign = 1
 [node name="SPBar" type="ColorRect" parent="VBoxContainer/SP"]
 show_behind_parent = true
 margin_left = 5.0
-margin_top = 2.5
 margin_right = 55.0
-margin_bottom = 7.5
+margin_bottom = 5.0
 color = Color( 0, 0, 1, 1 )
 __meta__ = {
 "_edit_use_anchors_": false

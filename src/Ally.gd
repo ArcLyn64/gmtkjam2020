@@ -34,7 +34,7 @@ func enter_battle():
 		return false
 	cur_state = STATE.battle
 	combatant_data.enter_battle()
-	print(get_name() + " is raring to go!")
+
 	return true
 
 func get_combatant_data() -> Combatant:
@@ -49,6 +49,7 @@ func init(scn_root, tilemap_ref, party_ref, enemies_ref, chests_ref, exit_ref):
 	exit = exit_ref
 	leader = spot_player()
 	combatant_data.init(get_name())
+	combatant_data.set_ai("ally")
 
 
 func update_astar(astar_update):
